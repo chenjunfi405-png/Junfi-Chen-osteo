@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérifier les Images Sauvegardées</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .image-container {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .image-item {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .image-item:last-child {
+            border-bottom: none;
+        }
+        .image-key {
+            font-weight: bold;
+            color: #0066cc;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .image-url {
+            background: #f9f9f9;
+            padding: 10px;
+            border-left: 4px solid #0066cc;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .copy-btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .copy-btn:hover {
+            background: #0052a3;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .status.empty {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .status.found {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>📸 Images Sauvegardées dans localStorage</h1>
+    
+    <div id="status" class="status empty">
+        Vérification des images en cours...
+    </div>
+    
+    <div id="imagesContainer" class="image-container"></div>
+
+    <script>
+        const storageKey = 'osteoSiteImages';
+        const images = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        const container = document.getElementById('imagesContainer');
+        const statusDiv = document.getElementById('status');
+
+        if (Object.keys(images).length === 0) {
+            statusDiv.innerHTML = '⚠️ Aucune image trouvée dans localStorage. Allez à l\'espace admin et téléchargez des images.';
+            container.innerHTML = '<p style="color: #999;">Aucune image</p>';
+        } else {
+            statusDiv.className = 'status found';
+            statusDiv.innerHTML = `✅ ${Object.keys(images).length} image(s) trouvée(s) dans localStorage`;
+
+            Object.entries(images).forEach(([key, dataURL]) => {
+                const item = document.createElement('div');
+                item.className = 'image-item';
+                
+                const keyDiv = document.createElement('div');
+                keyDiv.className = 'image-key';
+                keyDiv.textContent = `📷 ${key}`;
+                
+                const preview = document.createElement('img');
+                preview.src = dataURL;
+                preview.className = 'image-preview';
+                
+                const urlDiv = document.createElement('div');
+                urlDiv.className = 'image-url';
+                
+                // Afficher les 100 premiers caractères + "..."
+                const displayURL = dataURL.length > 100 
+                    ? dataURL.substring(0, 100) + '...'
+                    : dataURL;
+                urlDiv.textContent = dataURL;
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-btn';
+                copyBtn.textContent = '📋 Copier l\'URL complète';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(dataURL);
+                    copyBtn.textContent = '✅ Copié!';
+                    setTimeout(() => {
+                        copyBtn.textContent = '📋 Copier l\'URL complète';
+                    }, 2000);
+                };
+                
+                const sizeDiv = document.createElement('div');
+                sizeDiv.style.color = '#666';
+                sizeDiv.style.fontSize = '12px';
+                sizeDiv.style.marginTop = '10px';
+                sizeDiv.textContent = `Taille: ${(dataURL.length / 1024).toFixed(2)} KB`;
+                
+                item.appendChild(keyDiv);
+                item.appendChild(preview);
+                item.appendChild(urlDiv);
+                item.appendChild(copyBtn);
+                item.appendChild(sizeDiv);
+                
+                container.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>

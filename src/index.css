@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root.dark {
+  color-scheme: dark;
+}
+
+:root:not(.dark) {
+  color-scheme: light;
+}
+
+/* Optimisation globale du scroll - éviter les refresh */
+body, html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Empêcher les flashs d'images lors du scroll */
+img {
+  will-change: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Optimiser le rendu fluide de la hero section */
+.relative.min-h-\[90vh\] > div > img {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  contain: layout paint style;
+}
+
+/* Passage fluide de l'image sous la navbar - sans effet lumière */
+.relative.min-h-\[90vh\] {
+  will-change: auto;
+  contain: layout paint;
+}
+
+.relative.min-h-\[90vh\] > div {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: auto;
+  contain: layout paint;
+}
+
+/* Optimisation du scroll pour tous les éléments */
+.fixed, .sticky {
+  will-change: transform;
+  /* contain removed to avoid clipping fixed overlays/menus */
+}
+
+/* Prévenir les redémarrages GPU lors du scroll */
+main, section, div[class*="scroll"] {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Navbar glass/gradient effect on scroll */
+.nav-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(15,23,42,0.16), rgba(15,23,42,0));
+  opacity: 0;
+  transition: opacity 300ms ease, transform 300ms ease;
+  transform: translateY(-12px);
+}
+
+.nav-glass.nav-glass-scrolled::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animation de défilement pour la bannière d'actualité */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee2 {
+  0% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+.animate-marquee2 {
+  animation: marquee2 20s linear infinite;
+}
