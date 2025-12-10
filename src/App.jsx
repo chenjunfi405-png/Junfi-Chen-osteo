@@ -2071,7 +2071,7 @@ export default function App() {
               <li>Politique de confidentialité</li>
               <li>Plan du site</li>
               <li>Honoraires</li>
-              <li onClick={() => navTo('admin')} className="cursor-pointer hover:text-teal-400 text-slate-500 flex items-center gap-1"><Lock size={12}/> Espace Admin</li>
+              
             </ul>
           </div>
 
